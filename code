@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Steinbach Express Delivery Calculator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville&family=Rubik+Wet+Paint&display=swap');
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .calculator {
+            max-width: 400px;
+            margin: auto;
+            padding: 25px 20px 35px;
+            border-radius: 10px;
+            background-color: #EFE6D9; /* version 8 khaki */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h3 {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #3e3e3e;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        select, input[type="number"] {
+            margin-top: 5px;
+            width: 90%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+        input[type="number"] {
+            max-width: 90%;
+        }
+        button {
+            margin-top: 25px;
+            background-color: #87CEEB;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 90%;
+        }
+        button:hover {
+            background-color: #a9dff1;
+        }
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 20px;
+            color: #2a2a2a;
+        }
+        .description {
+            font-size: 12px;
+            color: #555;
+            margin-top: 3px;
+            font-style: italic;
+            text-align: center;
+        }
+        .branding {
+            font-family: 'Arial', sans-serif;
+            font-size: 11px;
+            color: #666;
+            margin-top: 25px;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h3>Delivery Calculator</h3>
+        
+        <label>Calculator Type:</label>
+        <select id="calculatorType">
+            <option value="standard">Standard</option>
+            <option value="business">Business</option>
+        </select>
+        <div class="description">(Choose business or standard rates)</div>
+
+        <label>Delivery Type:</label>
+        <select id="deliveryType">
+            <option value="standard">Standard</option>
+            <option value="express">Express</option>
+        </select>
+        <div class="description">(Express: within 2 hours)</div>
+
+        <label>Future Delivery:</label>
+        <select id="futureDelivery">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+        </select>
+        <div class="description">(Minimum 3 days in advance)</div>
+
+        <label>Distance (km):</label>
+        <input type="number" id="distance" placeholder="Enter distance" min="0" />
+        
+        <button onclick="calculateCost()">Check Price</button>
+        
+        <div class="result" id="result"></div>
+
+        <div class="branding">Steinbach Express Courier</div>
+    </div>
+
+    <script>
+        function calculateCost() {
+            const distance = parseFloat(document.getElementById('distance').value);
+            const calculatorType = document.getElementById('calculatorType').value;
+            const deliveryType = document.getElementById('deliveryType').value;
+            const futureDelivery = document.getElementById('futureDelivery').value;
+
+            if (isNaN(distance) || distance < 0) {
+                document.getElementById('result').innerHTML = "Please enter a valid distance.";
+                return;
+            }
+
+            let baseFee = 0;
+            let perKmFee = 0;
+
+            if (calculatorType === 'business') {
+                baseFee = 8.99;
+                perKmFee = 0.06;
+            } else {
+                if (distance <= 10) {
+                    baseFee = (deliveryType === 'express') ? 5.99 : 2.99;
+                    perKmFee = 0;
+                } else if (distance <= 40) {
+                    baseFee = (deliveryType === 'express') ? 10.99 : 5.99;
+                    perKmFee = 0.11;
+                } else if (distance <= 70) {
+                    baseFee = (deliveryType === 'express') ? 16.99 : 8.99;
+                    perKmFee = 0.11;
+                } else if (distance <= 150) {
+                    baseFee = (deliveryType === 'express') ? 16.99 : 8.99;
+                    perKmFee = 0.22;
+                } else {
+                    document.getElementById('result').innerHTML = "Distance out of range.";
+                    return;
+                }
+            }
+
+            let cost = baseFee + (distance * perKmFee);
+
+            if (futureDelivery === 'yes') {
+                cost *= 0.9;
+            }
+
+            document.getElementById('result').innerHTML = `Estimated Cost: $${cost.toFixed(2)}`;
+        }
+    </script>
+</body>
+</html>
